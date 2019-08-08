@@ -113,7 +113,7 @@ export default AsyncAwait extends ControlFlowComponent {
     this.isResolved = false;
     this.resolvedValue = UNINITIALIZED;
 
-    Promise.resolve(target).then(resolvedValue => {
+    Promise.resolve(awaited).then(resolvedValue => {
       // Don't do anything if we have already moved on to something else
       if (this.awaited === awaited) {
         this.isResolved = true;
