@@ -66,7 +66,7 @@ import { tracked } from '@glimmer/tracking';
 
 const UNINITIALIZED = Object.create(null);
 
-export default AsyncAwait extends ControlFlowComponent {
+export default class AsyncAwait extends ControlFlowComponent {
   /**
     The value to await, passed as a positional argument.
     @private
