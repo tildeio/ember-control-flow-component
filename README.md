@@ -86,6 +86,27 @@ export default class AsyncAwait extends ControlFlowComponent {
   awaited = UNINITIALIZED;
 
   /**
+    The result from awaiting the value.
+    @private
+    @property
+    @type AwaitResult
+  */
+  get result() {
+    // Nothing changed since we last awaited: same result.
+    if (this.value === this.awaited) {
+      return this._result;
+    }
+
+    // Otherwise, the value must have changed: new result.
+    let awaited = this.awaited = this.value;
+    let result = this._result = new AwaitResult(value);
+
+    return result;
+  }
+}
+
+class AwaitResult {
+  /**
     Whether the promise has been resolved. If `true`, the resolution value can
     be found in `resolvedValue`.
     @private
@@ -103,22 +124,10 @@ export default class AsyncAwait extends ControlFlowComponent {
   */
   @tracked resolvedValue = UNINITIALIZED;
 
-  didReceiveArguments() {
-    // Nothing changed, nothing to do
-    if (this.value === this.awaited) {
-      return;
-    }
-
-    let awaited = this.awaited = this.value;
-    this.isResolved = false;
-    this.resolvedValue = UNINITIALIZED;
-
+  constructor(value) {
     Promise.resolve(awaited).then(resolvedValue => {
-      // Don't do anything if we have already moved on to something else
-      if (this.awaited === awaited) {
-        this.isResolved = true;
-        this.resolvedValue = resolvedValue;
-      }
+      this.isResolved = true;
+      this.resolvedValue = resolvedValue;
     });
   }
 }
@@ -127,8 +136,8 @@ export default class AsyncAwait extends ControlFlowComponent {
 ```hbs
 {{!-- addon/components/async-await.hbs --}}
 
-{{#if this.isResolved}}
-  {{yield this.resolvedValue}}
+{{#if this.result.isResolved}}
+  {{yield this.result.resolvedValue}}
 {{else}}
   {{yield to="inverse"}}
 {{/if}}
