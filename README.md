@@ -98,7 +98,7 @@ export default class AsyncAwait extends ControlFlowComponent {
     }
 
     // Otherwise, the value must have changed: new result.
-    let awaited = this.awaited = this.value;
+    let value = this.awaited = this.value;
     let result = this._result = new AwaitResult(value);
 
     return result;
