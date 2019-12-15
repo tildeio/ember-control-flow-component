@@ -38,6 +38,10 @@ export default class ComponentManager<Component extends BaseComponent> {
 
   didCreateComponent(_component: Component) {}
 
+  didUpdateComponent(component: Component) {
+    component.didUpdate();
+  }
+
   destroyComponent(component: Component) {
     if (component.isDestroying) {
       return;

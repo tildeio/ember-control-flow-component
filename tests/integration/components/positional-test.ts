@@ -10,7 +10,7 @@ module('Integration | Component | positional', function(hooks) {
   setupRenderingTest(hooks);
 
   test('lifecycles', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     type Args = [number];
 
@@ -23,6 +23,10 @@ module('Integration | Component | positional', function(hooks) {
           assert.equal(this.args[0], 2, 'constructor receives args');
         }
 
+        didUpdate() {
+          assert.equal(this.args[0], 3, 'didUpdate');
+        }
+
         willDestroy() {
           assert.ok(true, 'willDestroy');
         }
@@ -32,8 +36,8 @@ module('Integration | Component | positional', function(hooks) {
     this.setProperties({ foo: 2 });
 
     await render(hbs`
-      {{#foo 3}}
-
+      {{#foo this.foo}}
+        boop
       {{/foo}}
     `);
 

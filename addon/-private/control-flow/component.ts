@@ -25,6 +25,12 @@ export default class BaseComponent<T = any[]> {
   }
 
   /**
+   * Called after the component has received new args
+   * and after all of the sub-components have been rendered.
+   */
+  didUpdate() {}
+
+  /**
    * Called before the component has been removed from the DOM.
    */
   willDestroy() {}
