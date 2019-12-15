@@ -13,7 +13,12 @@ export function setDestroyed(component: BaseComponent<unknown>) {
   DESTROYED.set(component, true);
 }
 
-export default class BaseComponent<T = any[]> {
+interface ControlFlowArgs {
+  named: object;
+  positional: any[];
+}
+
+export default class BaseComponent<T = ControlFlowArgs> {
   args: Readonly<T>;
 
   constructor(owner: unknown, args: T) {
@@ -23,6 +28,12 @@ export default class BaseComponent<T = any[]> {
     DESTROYING.set(this, false);
     DESTROYED.set(this, false);
   }
+
+  /**
+   * Called after the component receives args
+   *
+   */
+  didReceiveArgs() {}
 
   /**
    * Called after the component has received new args
@@ -39,7 +50,7 @@ export default class BaseComponent<T = any[]> {
     return Boolean(DESTROYING.get(this));
   }
 
-  get isDestroyed(): boolean{
+  get isDestroyed(): boolean {
     return Boolean(DESTROYED.get(this));
   }
 }

@@ -18,7 +18,7 @@ export default class ComponentManager<Component extends BaseComponent> {
   capabilities = capabilities('3.13', {
     destructor: true,
     asyncLifecycleCallbacks: true,
-    updateHook: false,
+    updateHook: true,
   });
 
   static create(attrs: {}) {
@@ -31,12 +31,16 @@ export default class ComponentManager<Component extends BaseComponent> {
   }
 
   createComponent(Klass: Constructor<Component>, args: ComponentManagerArgs) {
-    let instance = new Klass(getOwner(this), args.positional);
+    let instance = new Klass(getOwner(this), args);
 
     return instance;
   }
 
   didCreateComponent(_component: Component) {}
+
+  updateComponent(component: Component, args: ComponentManagerArgs) {
+    component.didReceiveArgs();
+  }
 
   didUpdateComponent(component: Component) {
     component.didUpdate();
