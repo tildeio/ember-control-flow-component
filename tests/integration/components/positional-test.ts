@@ -11,7 +11,7 @@ module('Integration | Component | positional', function(hooks) {
 
   module('essential behavior', function() {
     test('lifecycles', async function(assert) {
-      assert.expect(7);
+      assert.expect(9);
 
       type Args = { positional: number[] };
 
@@ -23,6 +23,12 @@ module('Integration | Component | positional', function(hooks) {
 
             assert.equal(this.args.positional[0], 2, 'constructor:0');
             assert.equal(this.args.positional[1], undefined, 'constructor:1');
+          }
+          get foo() {
+            return this.args.positional[0];
+          }
+          get bar() {
+            return this.args.positional[1];
           }
           didReceiveArgs() {
             assert.equal(this.args.positional[0], 3, 'didReceiveArgs:0');
@@ -37,18 +43,26 @@ module('Integration | Component | positional', function(hooks) {
           }
         }
       );
+      this.owner.register(
+        'template:components/foo',
+        hbs`{{yield (hash foo=this.foo bar=this.bar)}}`
+      );
 
       this.setProperties({ foo: 2 });
 
       await render(hbs`
-        {{#foo this.foo this.bar}}
-          boop
+        {{#foo this.foo this.bar as |foo|}}
+          {{foo.foo}} {{foo.bar}}
         {{/foo}}
       `);
+
+      assert.dom(this.element).hasText('2');
 
       this.setProperties({ foo: 3, bar: 4 });
 
       await settled();
+
+      assert.dom(this.element).hasText('3 4');
       await clearRender();
     });
 
